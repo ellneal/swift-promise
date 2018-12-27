@@ -1,0 +1,29 @@
+matrix:
+  include:
+  - os: osx
+    stage: lint
+    language: objective-c
+    osx_image: xcode10.1
+    script: make lint
+  - os: osx
+    stage: build
+    language: objective-c
+    osx_image: xcode10.1
+    install: swift package resolve
+    script: make build
+  - os: osx
+    stage: deploy
+    language: objective-c
+    osx_image: xcode10.1
+    before_install: brew install carthage
+    install: swift package resolve
+    script:
+    - make archive
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: V4Q0b+FwMimVvIthx6aGK8MJ40IgGyEr4wRrnRXty+v/UzbjHGPsh1fdtksnpVJ2yGFnFF40HphVMn7PZvQeQ+lfMwwJ+TW/N5Y2NxKRvvCMHZiJcEYczBNmJQJSatgmAIuX83xG8ZLZ4vV0drNU6/DIkVMKrCHLf47Oi+pEwTswZVAG1//I3D1LWDMTZwK36CCCaIwc0vCmAPxE8pT/M0TMUTbIYXw1I+gxDF1Kf/ONOYyNTWOXQQ1dqh/3wFEkq0MzXwUy/AtD7/ketjKQ3VOQcNIQfIAojo/uYyMmFXylR6rWRdslhfjy4l+bCpnSXkwfgsefOpPLvqwhQniIGM/RoVBZ2vzAn3L45CYBTboECpvI5361Kt82EoOnXCxRC9hIQADVs6ys1L/xITX3HAw6Fp8nH/bWLRFzf2/LF+BJmQS2XUrxHLD6/e6pEZvfEpZQuy9uKeogV4DyP4cB9CbYrI4vZkyW4acJjzkf8fLLm8sDYa3xM4VPg4orwVCwBWJbMw9yT4xe9aRuFbNNTjRSp5BS/TLya8itnLU9Ai98P7gLgHySUOpuGZZT8P6lx6B1lRpgJbCoZ0nOf92xNqYqJEdKYsokQvSlujb8VpyGA7yT5zKtuVBZeIXl6r5wSI8gctgPk//IoLlWG33n+M4pWY9jrXcM8D/YolVuEL4=
+      file: Promise.framework.zip
+      on:
+        tags: true

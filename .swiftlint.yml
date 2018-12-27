@@ -1,0 +1,12 @@
+disabled_rules:
+    - nesting
+identifier_name:
+    excluded:
+        - id
+        - to
+        - up
+        - i
+        - j
+        - k
+trailing_comma:
+    mandatory_comma: true
