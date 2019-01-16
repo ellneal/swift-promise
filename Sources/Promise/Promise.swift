@@ -1,16 +1,15 @@
-import AnyError
 import Result
 
-public class Promise<ReturnType> {
-    public typealias Callback = ((@escaping (ReturnType) -> Void), @escaping (Error) -> Void) -> Void
+public class Promise<ReturnType, ErrorType: Swift.Error> {
+    public typealias Callback = ((@escaping (ReturnType) -> Void), @escaping (ErrorType) -> Void) -> Void
     public typealias ThenCallback = (ReturnType) -> Void
-    public typealias ErrorCallback = (Error) -> Void
+    public typealias ErrorCallback = (ErrorType) -> Void
 
     private let callback: Callback
     private var thenCallbacks: [ThenCallback] = []
     private var errorCallbacks: [ErrorCallback] = []
 
-    private var result: Result<ReturnType, AnyError>?
+    private var result: Result<ReturnType, ErrorType>?
 
     private var isExecuting = false
 
@@ -19,22 +18,24 @@ public class Promise<ReturnType> {
     }
 
     @discardableResult
-    public func then(_ callback: @escaping (ReturnType) -> Void) -> Promise<ReturnType> {
+    public func then(_ callback: @escaping (ReturnType) -> Void) -> Promise<ReturnType, ErrorType> {
         enqueueThenCallback(callback)
         execute()
 
         return self
     }
 
-    public func then<T>(_ callback: @escaping (ReturnType) throws -> Promise<T>) -> Promise<T> {
-        let promise = Promise<T> { resolve, reject in
+    public func then<T>(_ callback: @escaping (ReturnType) throws -> Promise<T, ErrorType>) -> Promise<T, ErrorType> {
+        let promise = Promise<T, ErrorType> { resolve, reject in
             self.enqueueThenCallback { result in
                 do {
                     let promise = try callback(result)
                     promise.then { resolve($0) }
                         .catch { reject($0) }
-                } catch let error {
+                } catch let error as ErrorType {
                     reject(error)
+                } catch let error {
+                    fatalError("Invalid error type thrown. Expected \(ErrorType.self), got \(type(of: error))")
                 }
             }
 
@@ -49,7 +50,7 @@ public class Promise<ReturnType> {
     }
 
     @discardableResult
-    public func `catch`(_ callback: @escaping ((Error) -> Void)) -> Promise<ReturnType> {
+    public func `catch`(_ callback: @escaping ((ErrorType) -> Void)) -> Promise<ReturnType, ErrorType> {
         enqueueCatchCallback(callback)
         execute()
 
@@ -67,7 +68,7 @@ public class Promise<ReturnType> {
             self.result = .value(result)
             self.thenCallbacks.forEach { $0(result) }
         }, { error in
-            self.result = .error(AnyError(error))
+            self.result = .error(error)
             self.errorCallbacks.forEach { $0(error) }
         })
     }
@@ -85,7 +86,7 @@ public class Promise<ReturnType> {
     private func enqueueCatchCallback(_ callback: @escaping ErrorCallback) {
         if let result = result {
             if case .error(let error) = result {
-                callback(error.error)
+                callback(error)
             }
         } else {
             self.errorCallbacks.append(callback)
