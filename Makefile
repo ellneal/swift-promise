@@ -1,6 +1,6 @@
 .PHONY: archive
 archive:
-	generate-xcodeproj; \
+	make generate-xcodeproj; \
 	carthage build --archive
 
 .PHONY: build
