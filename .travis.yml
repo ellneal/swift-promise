@@ -12,6 +12,11 @@ matrix:
     install: swift package resolve
     script: make build
   - os: osx
+    stage: test
+    language: objective-c
+    osx_image: xcode10.1
+    script: make test
+  - os: osx
     stage: deploy
     language: objective-c
     osx_image: xcode10.1
