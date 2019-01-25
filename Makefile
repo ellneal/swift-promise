@@ -11,7 +11,7 @@ build:
 generate-xcodeproj:
 	rm -rf Promise.xcodeproj/; \
 	swift package generate-xcodeproj \
-		--xcconfig-overrides Config.xcconfig
+		--xcconfig-overrides Config/Config.xcconfig
 
 .PHONY: lint
 lint:
