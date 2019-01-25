@@ -17,5 +17,8 @@ let package = Package(
         .target(
             name: "Promise",
             dependencies: ["Result"]),
+        .testTarget(
+            name: "PromiseTests",
+            dependencies: ["Promise"]),
     ]
 )
