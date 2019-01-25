@@ -2,15 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "AnyError",
-        "repositoryURL": "https://github.com/ellneal/swift-any-error",
-        "state": {
-          "branch": null,
-          "revision": "457b57ff7728f3f514798ebb45c2fdb795a95e99",
-          "version": "1.0.0"
-        }
-      },
-      {
         "package": "Result",
         "repositoryURL": "https://github.com/ellneal/swift-result",
         "state": {
