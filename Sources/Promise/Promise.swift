@@ -65,17 +65,17 @@ public class Promise<ReturnType, ErrorType: Swift.Error> {
         isExecuting = true
 
         self.callback({ result in
-            self.result = .value(result)
+            self.result = .success(result)
             self.thenCallbacks.forEach { $0(result) }
         }, { error in
-            self.result = .error(error)
+            self.result = .failure(error)
             self.errorCallbacks.forEach { $0(error) }
         })
     }
 
     private func enqueueThenCallback(_ callback: @escaping ThenCallback) {
         if let result = result {
-            if case .value(let result) = result {
+            if case .success(let result) = result {
                 callback(result)
             }
         } else {
@@ -85,7 +85,7 @@ public class Promise<ReturnType, ErrorType: Swift.Error> {
 
     private func enqueueCatchCallback(_ callback: @escaping ErrorCallback) {
         if let result = result {
-            if case .error(let error) = result {
+            if case .failure(let error) = result {
                 callback(error)
             }
         } else {

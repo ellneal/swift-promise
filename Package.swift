@@ -11,7 +11,7 @@ let package = Package(
             targets: ["Promise"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ellneal/swift-result", from: "1.0.0"),
+        .package(url: "https://github.com/ellneal/swift-result", from: "2.0.0"),
     ],
     targets: [
         .target(
