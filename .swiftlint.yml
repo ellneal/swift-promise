@@ -10,3 +10,7 @@ identifier_name:
         - k
 trailing_comma:
     mandatory_comma: true
+excluded:
+    - .build
+    - Carthage
+    - Development
