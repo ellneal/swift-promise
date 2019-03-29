@@ -1,5 +1,3 @@
-import Result
-
 public class Promise<ReturnType, ErrorType: Swift.Error> {
     public typealias Callback = ((@escaping (ReturnType) -> Void), @escaping (ErrorType) -> Void) -> Void
     public typealias ThenCallback = (ReturnType) -> Void
