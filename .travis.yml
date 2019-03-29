@@ -3,23 +3,23 @@ matrix:
   - os: osx
     stage: lint
     language: objective-c
-    osx_image: xcode10.1
+    osx_image: xcode10.2
     script: make lint
   - os: osx
     stage: build
     language: objective-c
-    osx_image: xcode10.1
+    osx_image: xcode10.2
     install: swift package resolve
     script: make build
   - os: osx
     stage: test
     language: objective-c
-    osx_image: xcode10.1
+    osx_image: xcode10.2
     script: make test
   - os: osx
     stage: deploy
     language: objective-c
-    osx_image: xcode10.1
+    osx_image: xcode10.2
     install: swift package resolve
     script: make archive
     deploy:
