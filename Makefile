@@ -1,31 +1,32 @@
-.PHONY: archive
-archive: version-xcconfig xcodeproj
-	carthage build --archive
+SWIFT_DEV_PM_FLAGS += --package-path $(CURDIR)/Development/ -Xswiftc -suppress-warnings
+CONFIG_FILE=$(CURDIR)/Config/Config.xcconfig
+VERSION_CONFIG_FILE=$(CURDIR)/Config/Version.xcconfig
 
-.PHONY: build
-build: version-xcconfig
-	make generate-version-xcconfig; \
+.PHONY: archive build lint open test xcconfig xcodeproj
+
+archive: xcodeproj
+	swift run $(SWIFT_DEV_PM_FLAGS) carthage build --archive
+
+build: xcconfig
 	swift build
 
-.PHONY: version-xcconfig
-version-xcconfig:
-	echo "CURRENT_PROJECT_VERSION=$$(git describe --abbrev=0 --tags | cut -c 2-)" > \
-		$(CURDIR)/Config/Version.xcconfig
-
-.PHONY: xcodeproj
-xcodeproj:
-	rm -rf Promise.xcodeproj/; \
-	swift package generate-xcodeproj \
-		--xcconfig-overrides Config/Config.xcconfig
-
-.PHONY: lint
 lint:
-	swift run --package-path Development/ swiftlint
+	swift run $(SWIFT_DEV_PM_FLAGS) swiftlint
 
-.PHONY: open
-open: xcodeproj
+open: Promise.xcodeproj
 	xed .
 
-.PHONY: test
 test:
 	swift test
+
+xcconfig:
+	echo "CURRENT_PROJECT_VERSION=$$(git describe --abbrev=0 --tags | cut -c 2-)" > \
+		$(VERSION_CONFIG_FILE)
+
+xcodeproj: xcconfig
+	swift package generate-xcodeproj \
+		--xcconfig-overrides $(CONFIG_FILE)
+
+Promise.xcodeproj:
+	swift package generate-xcodeproj \
+		--xcconfig-overrides $(CONFIG_FILE)
