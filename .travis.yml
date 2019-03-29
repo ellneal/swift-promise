@@ -20,10 +20,8 @@ matrix:
     stage: deploy
     language: objective-c
     osx_image: xcode10.1
-    before_install: brew install carthage
     install: swift package resolve
-    script:
-    - make archive
+    script: make archive
     deploy:
       provider: releases
       skip_cleanup: true
